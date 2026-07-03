@@ -1,7 +1,6 @@
 const BASE_URL = "https://library-management-system-28b8.onrender.com";
 const API_URL = BASE_URL + "/books";
 
-// Ensure the DOM is fully loaded before executing scripts
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
