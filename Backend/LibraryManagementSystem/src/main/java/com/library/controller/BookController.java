@@ -37,9 +37,7 @@ public class BookController {
         }
 
         String fileName = System.currentTimeMillis() + "_" + pdf.getOriginalFilename();
-
         File file = new File(uploadDir + fileName);
-
         pdf.transferTo(file);
 
         Book book = new Book();
