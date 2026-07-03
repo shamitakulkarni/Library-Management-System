@@ -8,7 +8,7 @@ A full-stack **Library Management System** developed using **Java, Spring Boot, 
 
 The entire full-stack application is deployed and hosted using **Render cloud services**:
 
-- **Frontend Interface Application:** [https://library-management-system-1-lowt.onrender.com/login.html](https://library-management-system-1-lowt.onrender.com/login.html)
+- **Frontend Interface Application:** https://library-management-system-1-lcwt.onrender.com/login.html
 - **Backend Spring Boot API Service:** `https://library-management-system-28b8.onrender.com`
 
 *The frontend application is built using Vite and deployed as a Static Site, which securely routes all data requests to the active Spring Boot REST API backend service running concurrently on Render.*
