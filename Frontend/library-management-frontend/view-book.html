@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System - View Books</title>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>📚 Library Management System</h1>
+
+    <h2>Available Books</h2>
+
+    <table id="bookTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>PDF</th>
+            </tr>
+        </thead>
+        <tbody id="bookFields"></tbody>
+    </table>
+
+    <br>
+
+    <div class="button-group">
+        <a href="/add-book.html">
+            <button class="back-btn">⬅ Back</button>
+        </a>
+
+        <a href="/login.html">
+            <button class="logout-btn">Logout</button>
+        </a>
+    </div>
+
+</div>
+
+<script type="module" src="/src/script.js"></script>
+
+<script type="module">
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+        alert("Please login first");
+        window.location.href = "/login.html";
+    }
+</script>
+
+</body>
+</html>

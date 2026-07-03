@@ -1,0 +1,15 @@
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
+
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        login: resolve(__dirname, 'login.html'),
+        addBook: resolve(__dirname, 'add-book.html'),
+        viewBook: resolve(__dirname, 'view-book.html'),
+      },
+    },
+  },
+});

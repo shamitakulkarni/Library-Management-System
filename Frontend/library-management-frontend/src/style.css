@@ -1,0 +1,180 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f5f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* LOGIN */
+
+.login-container {
+    width: 350px;
+    margin: 100px auto;
+    padding: 25px;
+    background: white;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.login-container h2 {
+    color: #1565c0;
+}
+
+.login-container input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-container button:hover {
+    background: #0d47a1;
+}
+
+/* ADD BOOK */
+
+.form-container {
+    width: 380px;
+    margin: 70px auto;
+    padding: 25px;
+    background: white;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.form-container h2 {
+    color: #1565c0;
+}
+
+.form-container input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.form-container button {
+    width: 90%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.form-container button:hover {
+    background: #1b5e20;
+}
+
+/* VIEW BOOKS */
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.container h1 {
+    text-align: center;
+    color: #1565c0;
+}
+
+.container h2 {
+    text-align: center;
+    color: #555;
+}
+
+#bookTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#bookTable th {
+    background: #1565c0;
+    color: white;
+    padding: 12px;
+}
+
+#bookTable td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+#bookTable tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+#bookTable tr:hover {
+    background: #e3f2fd;
+}
+
+#bookTable a {
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#bookTable a:hover {
+    text-decoration: underline;
+}
+
+.button-group {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.back-btn,
+.logout-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    margin: 5px;
+}
+
+.back-btn {
+    background: #1976d2;
+}
+
+.back-btn:hover {
+    background: #0d47a1;
+}
+
+.logout-btn {
+    background: #d32f2f;
+}
+
+.logout-btn:hover {
+    background: #b71c1c;
+}
+
+#msg {
+    margin-top: 15px;
+    font-weight: bold;
+}
