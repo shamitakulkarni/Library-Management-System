@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8081/books";
+const BASE_URL = "https://library-management-system-28b8.onrender.com";
+const API_URL = BASE_URL + "/books";
 
 // Ensure the DOM is fully loaded before executing scripts
 document.addEventListener('DOMContentLoaded', () => {
@@ -7,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. LOGIN PAGE LOGIC
     // ==========================================
     const loginBtn = document.getElementById("loginBtn");
+
     if (loginBtn) {
         loginBtn.addEventListener("click", () => {
             let username = document.getElementById("username").value;
@@ -16,10 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (username === "manager" && password === "manager123") {
                 localStorage.setItem("user", "Manager");
                 window.location.href = "/add-book.html";
-            } else if (username === "student" && password === "student123") {
+            } 
+            else if (username === "student" && password === "student123") {
                 localStorage.setItem("user", "Student");
                 window.location.href = "/view-book.html";
-            } else {
+            } 
+            else {
                 msg.innerText = "Invalid Username or Password";
                 msg.style.color = "red";
             }
@@ -30,8 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. ADD BOOK PAGE LOGIC (UPLOAD PDF)
     // ==========================================
     const addBookBtn = document.getElementById("addBookBtn");
+
     if (addBookBtn) {
         addBookBtn.addEventListener("click", () => {
+
             let title = document.getElementById("title").value;
             let author = document.getElementById("author").value;
             let pdf = document.getElementById("pdf").files[0];
@@ -54,15 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(res => {
                 if (!res.ok) {
-                    throw new Error("Network response was not ok");
+                    throw new Error("Network response failed");
                 }
                 return res.json();
             })
-            .then(data => {
+            .then(() => {
                 msg.innerText = "Book added successfully!";
                 msg.style.color = "green";
 
-                // Clear fields safely
                 document.getElementById("title").value = "";
                 document.getElementById("author").value = "";
                 document.getElementById("pdf").value = "";
@@ -76,15 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 3. VIEW BOOKS PAGE LOGIC (Fixed to target bookFields)
+    // 3. VIEW BOOKS PAGE LOGIC
     // ==========================================
     const bookFields = document.getElementById("bookFields");
+
     if (bookFields) {
-        // Automatically fetch and render books when view-book.html loads
         fetch(API_URL)
         .then(res => res.json())
         .then(data => {
-            bookFields.innerHTML = ""; // Clears old data rows, keeping <thead> intact!
+
+            bookFields.innerHTML = "";
 
             data.forEach(book => {
                 bookFields.innerHTML += `
@@ -94,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${book.author}</td>
                         <td>${book.issued ? "📕 Issued" : "✅ Available"}</td>
                         <td>
-                            <a href="${book.pdfPath ? 'http://localhost:8081/uploads/' + book.pdfPath : '#'}" target="_blank">
+                            <a href="${book.pdfPath ? BASE_URL + '/uploads/' + book.pdfPath : '#'}" target="_blank">
                                 View PDF
                             </a>
                         </td>
