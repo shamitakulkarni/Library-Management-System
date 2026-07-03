@@ -19,20 +19,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // 1. Enable CORS and Disable CSRF for stateless API interactions
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            
-            // 2. Configure endpoint permissions
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/books/**").permitAll()
                     .requestMatchers("/uploads/**").permitAll()
                     .requestMatchers("/api/auth/**").permitAll()
                     .anyRequest().authenticated()
             )
-            
-            // 3. REMOVED httpBasic() to completely kill the browser login popup box
-            // 4. Keep formLogin disabled since we handle auth via our custom frontend UI
             .formLogin(form -> form.disable());
 
         return http.build();
@@ -42,14 +36,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Allow your live Render frontend domain to communicate with this backend
-        configuration.setAllowedOrigins(List.of("https://library-management-system-1-lowt.onrender.com"));
+        configuration.setAllowedOrigins(List.of(
+            "https://library-management-system-1-lcwt.onrender.com",
+            "https://library-management-system-1-lowt.onrender.com"
+        ));
         
-        // Allow typical standard REST methods
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        
-        // Allow necessary credentials and standard request header values
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
