@@ -111,11 +111,3 @@ public class BookController {
         }
     }
 }
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-}
