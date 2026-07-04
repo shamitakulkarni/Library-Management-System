@@ -11,10 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    private final String uploadDir = System.getProperty("java.io.tmpdir") + File.separator + "uploads" + File.separator;
+    private static final String UPLOAD_DIR = "uploads";
 
     @PostMapping
     public Book addBook(@RequestBody Book book) {
@@ -33,27 +34,46 @@ public class BookController {
     }
 
     @PostMapping("/upload")
-    public Book uploadBook(
+    public ResponseEntity<?> uploadBook(
             @RequestParam("title") String title,
             @RequestParam("author") String author,
-            @RequestParam("pdf") MultipartFile pdf) throws IOException {
+            @RequestParam("pdf") MultipartFile pdf) {
 
-        File folder = new File(uploadDir);
-        if (!folder.exists()) {
-            folder.mkdirs();
+        try {
+
+            if (pdf.isEmpty()) {
+                return ResponseEntity.badRequest().body("Please select a PDF file.");
+            }
+
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + pdf.getOriginalFilename();
+
+            Path filePath = uploadPath.resolve(fileName);
+
+            Files.copy(
+                    pdf.getInputStream(),
+                    filePath,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+
+            Book book = new Book();
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setIssued(false);
+            book.setPdfPath(fileName);
+
+            Book savedBook = bookService.addBook(book);
+
+            return ResponseEntity.ok(savedBook);
+
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body("Upload failed: " + e.getMessage());
         }
-
-        String fileName = System.currentTimeMillis() + "_" + pdf.getOriginalFilename();
-        File file = new File(uploadDir + fileName);
-        pdf.transferTo(file);
-
-        Book book = new Book();
-        book.setTitle(title);
-        book.setAuthor(author);
-        book.setIssued(false);
-        book.setPdfPath(fileName);
-
-        return bookService.addBook(book);
     }
 
     @GetMapping
@@ -94,16 +114,28 @@ public class BookController {
 
     @GetMapping("/files/{filename}")
     public ResponseEntity<Resource> getPdfFile(@PathVariable String filename) {
+
         try {
-            Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
+
+            Path filePath = Paths.get(UPLOAD_DIR).resolve(filename).normalize();
+
             Resource resource = new UrlResource(filePath.toUri());
 
-            if (resource.exists() || resource.isReadable()) {
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .body(resource);
-            } else {
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "inline; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+}            } else {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
