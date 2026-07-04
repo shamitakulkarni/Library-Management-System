@@ -19,34 +19,38 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/books/**").permitAll()
-                    .requestMatchers("/uploads/**").permitAll()
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .formLogin(form -> form.disable());
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/books/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().permitAll()
+                )
+                .formLogin(form -> form.disable())
+                .httpBasic(httpBasic -> httpBasic.disable());
 
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         configuration.setAllowedOrigins(List.of(
-            "https://library-management-system-1-lcwt.onrender.com",
-            "https://library-management-system-1-lowt.onrender.com"
+                "https://library-management-system-1-lcwt.onrender.com",
+                "https://library-management-system-28b8.onrender.com"
         ));
-        
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-        configuration.setAllowCredentials(true);
+
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 
