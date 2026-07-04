@@ -25,7 +25,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    private final String uploadDir = "./uploads/";
+    private final String uploadDir = System.getProperty("java.io.tmpdir") + File.separator + "uploads" + File.separator;
 
     @PostMapping
     public Book addBook(@RequestBody Book book) {
@@ -103,6 +103,14 @@ public class BookController {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                         .contentType(MediaType.APPLICATION_PDF)
                         .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+}
             } else {
                 return ResponseEntity.notFound().build();
             }
