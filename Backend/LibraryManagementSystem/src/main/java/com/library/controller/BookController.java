@@ -25,7 +25,6 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // FIX: Declared once at the top as a safe relative path for cloud servers
     private final String uploadDir = "./uploads/";
 
     @PostMapping
@@ -103,6 +102,15 @@ public class BookController {
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                         .contentType(MediaType.APPLICATION_PDF)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+}
                         .body(resource);
             } else {
                 return ResponseEntity.notFound().build();
