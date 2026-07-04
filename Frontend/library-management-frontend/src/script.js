@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 2. ADD BOOK PAGE LOGIC (UPLOAD PDF)
+    // 2. ADD BOOK PAGE LOGIC (UPLOAD PDF) - FIXED JSON TRAP
     // ==========================================
     const addBookBtn = document.getElementById("addBookBtn");
 
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!res.ok) {
                     throw new Error("Network response failed");
                 }
-                return res.json();
+                return res.text(); // <-- FIXED: Reads the response text instead of breaking on .json()
             })
             .then(() => {
                 msg.innerText = "Book added successfully!";
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 3. VIEW BOOKS PAGE LOGIC
+    // 3. VIEW BOOKS PAGE LOGIC - FIXED 403 ERROR
     // ==========================================
     const bookFields = document.getElementById("bookFields");
 
@@ -92,6 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
             bookFields.innerHTML = "";
 
             data.forEach(book => {
+                // FIXED: Directs request to your streaming endpoint controller, bypassing security access blocks
+                const pdfDownloadUrl = book.pdfPath ? `${BASE_URL}/books/files/${book.pdfPath}` : '#';
+
                 bookFields.innerHTML += `
                     <tr>
                         <td>${book.id}</td>
@@ -99,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${book.author}</td>
                         <td>${book.issued ? "📕 Issued" : "✅ Available"}</td>
                         <td>
-                            <a href="${book.pdfPath ? BASE_URL + '/uploads/' + book.pdfPath : '#'}" target="_blank">
+                            <a href="${pdfDownloadUrl}" target="_blank">
                                 View PDF
                             </a>
                         </td>
