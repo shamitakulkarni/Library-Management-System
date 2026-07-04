@@ -3,11 +3,18 @@ package com.library.controller;
 import com.library.entity.Book;
 import com.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -83,5 +90,28 @@ public class BookController {
     @PutMapping("/return/{id}")
     public Book returnBook(@PathVariable Long id) {
         return bookService.returnBook(id);
+    }
+
+    // ========================================================
+    // NEW: SERVES UPLOADED PDFs WITHOUT 403 FORBIDDEN ERRORS
+    // ========================================================
+    @GetMapping("/files/{filename}")
+    public ResponseEntity<Resource> getPdfFile(@PathVariable String filename) {
+        try {
+            String uploadDir = System.getProperty("user.dir") + "/uploads/";
+            Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
