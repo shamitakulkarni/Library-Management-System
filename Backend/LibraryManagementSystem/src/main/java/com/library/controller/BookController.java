@@ -25,6 +25,9 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    // FIX: Declared once at the top as a safe relative path for cloud servers
+    private final String uploadDir = "./uploads/";
+
     @PostMapping
     public Book addBook(@RequestBody Book book) {
         return bookService.addBook(book);
@@ -35,8 +38,6 @@ public class BookController {
             @RequestParam("title") String title,
             @RequestParam("author") String author,
             @RequestParam("pdf") MultipartFile pdf) throws IOException {
-
-        String uploadDir = System.getProperty("user.dir") + "/uploads/";
 
         File folder = new File(uploadDir);
         if (!folder.exists()) {
@@ -92,17 +93,25 @@ public class BookController {
         return bookService.returnBook(id);
     }
 
-    // ========================================================
-    // NEW: SERVES UPLOADED PDFs WITHOUT 403 FORBIDDEN ERRORS
-    // ========================================================
     @GetMapping("/files/{filename}")
     public ResponseEntity<Resource> getPdfFile(@PathVariable String filename) {
         try {
-            String uploadDir = System.getProperty("user.dir") + "/uploads/";
             Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() || resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+}
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                         .contentType(MediaType.APPLICATION_PDF)
